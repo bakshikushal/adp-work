@@ -28,7 +28,7 @@ const COLS = [
 export default class TaxProfiles extends LightningElement {
     yearSelected = '';
     quarterSelected = '';
-    profileSelected = '';
+    profileSelected = [];
     taxTypeSelected = '';
     defaultRecordId;
     yearOptions;
@@ -104,6 +104,11 @@ export default class TaxProfiles extends LightningElement {
         this.taxTypeSelected = event.target.value;
     }
 
+    handleProfileChangeCheckbox(event){
+        console.log('Profile Selected Checked : ',JSON.stringify(event.target.value));
+        this.profileSelected = event.target.value;
+    }
+
     handleApply(){
         console.log('Selected Year : ',this.yearSelected);
         console.log('Selected Profile : ',this.profileSelected);
@@ -128,7 +133,7 @@ export default class TaxProfiles extends LightningElement {
     handleReset(){
         console.log('IN RESET : ');
         this.yearSelected = '';
-        this.profileSelected = '';
+        this.profileSelected = [];
         this.quarterSelected = '';
         this.taxTypeSelected = '';
         
