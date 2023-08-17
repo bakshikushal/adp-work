@@ -1,0 +1,67 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card variant="Narrow" title="Tax Profiles" icon-name="standard:account">
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="6" medium-device-size="6"
+                large-device-size="6">
+                <div class="slds-grid ">
+                    <div class="slds-col slds-size_4-of-12 slds-var-p-horizontal_small">
+                        <div class="lineClass">
+                            Year/Quarter
+                        </div>
+                        <div class="slds-grid ">
+                            <div class="slds-col slds-size_6-of-12 ">
+                                <lightning-combobox name="Year" value={yearSelected} placeholder="Year :"
+                                    options={yearOptions} onchange={handleYearChange}></lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_6-of-12 ">
+                                <lightning-combobox name="Quarter" value={quarterSelected} placeholder="Qtr :"
+                                    options={quarterOptions} onchange={handleQuarterChange}></lightning-combobox>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="slds-col slds-size_4-of-12 slds-var-p-horizontal_small ">
+                        <div class="lineClass">
+                            Profile
+                        </div>
+                        <div>
+                            <lightning-combobox name="Profile" value={profileSelected} placeholder="Profile :"
+                                options={profileOptions} onchange={handleProfileChange}></lightning-combobox>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_4-of-12 slds-var-p-horizontal_small ">
+                        <div class="lineClass">
+                            Tax Type
+                        </div>
+                        <div>
+                            <div>
+                                <lightning-combobox name="Tax" value={taxTypeSelected} placeholder="TaxType :"
+                                    options={taxTypeOptions} onchange={handleTaxChange}></lightning-combobox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12"
+                large-device-size="12">
+                <div class="slds-align_absolute-center">
+                    <lightning-button variant="brand" class="slds-m-horizontal_small" label="Apply" title="Apply Filters"
+                        onclick={handleApply}></lightning-button>
+                    <lightning-button variant="destructive" label="Reset" title="Reset Filters"
+                        onclick={handleReset}></lightning-button>
+                </div>
+
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12"
+                large-device-size="12">
+                <div>
+                <lightning-datatable key-field="id" data={taxData} columns={columns}>
+                </lightning-datatable>
+                </div>
+            </lightning-layout-item>
+
+        </lightning-layout>
+    </lightning-card>
+
+</template>
