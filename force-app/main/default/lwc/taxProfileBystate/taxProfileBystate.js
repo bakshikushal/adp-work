@@ -14,7 +14,7 @@ export default class TaxProfileBystate extends LightningElement {
     quarterSelected = '';
     profileSelected = '';
     taxTypeSelected = '';
-    stateSelected = '';
+    selectedStates = [];
     defaultRecordId;
     // yearOptions;
     // quarterOptions;
@@ -29,6 +29,8 @@ export default class TaxProfileBystate extends LightningElement {
     showStateLookup = false;
     stateOptions;
     showStateDropdown= false;
+    stateNames=[];
+    profileToSend =''
     
     get yearOptions() {
         return [
@@ -63,30 +65,40 @@ export default class TaxProfileBystate extends LightningElement {
 
     handleYearChange(event){
         this.yearSelected = event.target.value;
+        this.fetchStates();
     }
     handleProfileChange(event){
         let profile = event.detail.value;
         console.log('profile : ',profile);
-        this.profileSelected = profile[0];
-        this.profileSelected === 'ST' ? this.fetchStates() : this.showStateDropdown = false ;
-
-        // if(this.profileSelected === 'ST'){
-        //     this.fetchStates();
-        // }
-
-        console.log('profileSelected : ',this.profileSelected);
+        if(!profile.includes('ST')){
+            this.showStateDropdown = false;
+            this.profileToSend = ''
+        }
+        else{
+            this.profileToSend = 'ST'
+        }
+        console.log('this.profileToSend : ',this.profileToSend);
+        this.fetchStates();
+        
 
     }
     handleQuarterChange(event){
         this.quarterSelected = event.target.value;
+        this.fetchStates();
     }
     handleTaxChange(event){
         this.taxTypeSelected = event.target.value;
+        this.fetchStates();
     }
 
-    handleStateChange(event){
-        this.stateSelected = event.target.value;
-        console.log('STATE SELECTED : ',this.stateSelected);
+    // handleStateChange(event){
+    //     this.stateSelected = event.target.value;
+    //     console.log('STATE SELECTED : ',this.stateSelected);
+    // }
+
+    handleStateEvent(event){
+        console.log('RECIEVED SELECTED STATES : ',event.detail.selectedStates);
+        this.selectedStates = event.detail.selectedStates ;
     }
 
     handleApply(){
@@ -95,35 +107,39 @@ export default class TaxProfileBystate extends LightningElement {
         console.log('Selected Quarter : ',this.quarterSelected);
         console.log('Selected Tax : ',this.taxTypeSelected);
         this.isLoading = true;
-        getDemoData({branch:this.profileSelected, companyCode: this.taxTypeSelected, year:this.yearSelected,  quarter:this.quarterSelected})
-            .then(result => {
-                console.log('SOQL QUERY RETURNED: ',result);
-                let response = JSON.parse(result);
-                console.log('SOQL QUERY RETURNED: ',response);
-                console.log('SOQL QUERY RETURNED: ',response.states);
-                this.taxData = response.states;
-                this.isLoading = false;
-                this.showData=true;
-                this.showError=false;
-                const stateopts = this.taxData.map(state => {
-                    return { label: state.longName, value: state.stateCode }
-                })
-                this.stateOptions = stateopts;
-                this.showStateLookup = true;
-            })
-            .catch(error => {
-                console.log('ERROR FROM APEX CLASS : ',error);
-                this.isLoading = false;
-                this.showData=false;
-                this.showError=true;
-                this.showStateLookup = false;
-            });
+        this.taxData = this.statesData.filter(state => this.selectedStates.includes(state.state));
+        console.log('TAX DATE: ',this.taxData);
+        this.isLoading = false;
+        this.showData=true;
+        // getDemoData({branch:this.profileToSend, companyCode: this.taxTypeSelected, year:this.yearSelected,  quarter:this.quarterSelected})
+        //     .then(result => {
+        //         console.log('SOQL QUERY RETURNED: ',result);
+        //         let response = JSON.parse(result);
+        //         console.log('SOQL QUERY RETURNED: ',response);
+        //         console.log('SOQL QUERY RETURNED: ',response.states);
+        //         this.taxData = response.states;
+        //         this.isLoading = false;
+        //         this.showData=true;
+        //         this.showError=false;
+        //         const stateopts = this.taxData.map(state => {
+        //             return { label: state.longName, value: state.stateCode }
+        //         })
+        //         this.stateOptions = stateopts;
+        //         this.showStateLookup = true;
+        //     })
+        //     .catch(error => {
+        //         console.log('ERROR FROM APEX CLASS : ',error);
+        //         this.isLoading = false;
+        //         this.showData=false;
+        //         this.showError=true;
+        //         this.showStateLookup = false;
+        //     });
     }
 
     handleReset(){
         console.log('IN RESET : ');
         this.yearSelected = '';
-        this.profileSelected = '';
+        this.profileSelected = [];
         this.quarterSelected = '';
         this.taxTypeSelected = '';
         
@@ -132,32 +148,36 @@ export default class TaxProfileBystate extends LightningElement {
 
         this.taxData = [];
         this.showData=false;
-        this.showStateLookup = false;
+        this.showStateDropdown = false;
+        
     }
 
     fetchStates(){
-         this.isLoading = true;
-        getDemoData({branch:this.profileSelected, companyCode: this.taxTypeSelected, year:this.yearSelected,  quarter:this.quarterSelected})
-            .then(result => {
-                console.log('this.isLoading : ',this.isLoading);
-                console.log('SOQL QUERY RETURNED: ',result);
-                let response = JSON.parse(result);
-                const taxData = response.states;
-                this.showError=false;
-                const stateopts = taxData.map(state => {
-                    return { label: state.longName, value: state.stateCode }
+        if(this.profileToSend === 'ST' && this.yearSelected === '2019' && this.taxTypeSelected === 'BI01' && this.quarterSelected == '1'){
+            this.isLoading = true;
+            getDemoData({branch:this.profileToSend, companyCode: this.taxTypeSelected, year:this.yearSelected,  quarter:this.quarterSelected})
+                .then(result => {
+                    console.log('this.isLoading : ',this.isLoading);
+                    console.log('SOQL QUERY RETURNED: ',result);
+                    let response = JSON.parse(result);
+                    this.statesData = response.states;
+                    this.showError=false;
+                    // const stateopts = statesData.map(state => {
+                    //     return { label: state.longName, value: state.stateCode }
+                    // })
+                    this.isLoading = false;
+                    // this.stateOptions = stateopts;
+                    this.stateNames = this.statesData.map(state => state.state);
+                    this.showStateDropdown = true;
                 })
-                this.isLoading = false;
-                this.stateOptions = stateopts;
-                this.showStateDropdown = true;
-            })
-            .catch(error => {
-                console.log('ERROR FROM APEX CLASS : ',error);
-                this.isLoading = false;
-                // this.showData=false;
-                this.showError=true;
-                this.showStateDropdown = false;
-            });
+                .catch(error => {
+                    console.log('ERROR FROM APEX CLASS : ',error);
+                    this.isLoading = false;
+                    // this.showData=false;
+                    this.showError=true;
+                    this.showStateDropdown = false;
+                });
+        }
 
     }
 

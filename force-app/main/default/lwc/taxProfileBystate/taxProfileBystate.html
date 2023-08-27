@@ -28,16 +28,18 @@
                         <div>
                             <!-- <lightning-combobox name="Profile" value={profileSelected} placeholder="Profile :"
                                 options={profileOptions} onchange={handleProfileChange}></lightning-combobox> -->
-                             <div>
+                        <div>
                             <lightning-checkbox-group name="Checkbox Group"
                               options={profileOptions}
                               value={profileSelected}
                               onchange={handleProfileChange}
                               variant="standard"
                             ></lightning-checkbox-group>
+                            
                             <template if:true={showStateDropdown}>
-                                <lightning-combobox name="STATE" value={stateSelected} placeholder="State :"
-                                    options={stateOptions} onchange={handleStateChange}></lightning-combobox>
+                                <c-multi-select-picklist picklist-input={stateNames} onselect={handleStateEvent}></c-multi-select-picklist>
+                                <!-- <lightning-combobox name="STATE" value={stateSelected} placeholder="State :"
+                                    options={stateOptions} onchange={handleStateChange}></lightning-combobox> -->
                             </template>
                             
                         </div>
