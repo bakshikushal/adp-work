@@ -26,8 +26,16 @@
                             Profile
                         </div>
                         <div>
-                            <lightning-combobox name="Profile" value={profileSelected} placeholder="Profile :"
-                                options={profileOptions} onchange={handleProfileChange}></lightning-combobox>
+                            <!-- <lightning-combobox name="Profile" value={profileSelected} placeholder="Profile :"
+                                options={profileOptions} onchange={handleProfileChange}></lightning-combobox> -->
+                             <div>
+                            <lightning-checkbox-group name="Checkbox Group"
+                              options={profileOptions}
+                              value={profileSelected}
+                              onchange={handleProfileChange}
+                              variant="standard"
+                            ></lightning-checkbox-group>
+                        </div>
                         </div>
                     </div>
                     <div class="slds-col slds-size_4-of-12 slds-var-p-horizontal_small ">

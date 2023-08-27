@@ -64,7 +64,13 @@ export default class TaxProfileBystate extends LightningElement {
         this.yearSelected = event.target.value;
     }
     handleProfileChange(event){
-        this.profileSelected = event.target.value;
+        // console.log('PROFILE SELECTED: ', JSON.stringify(event.target.value));
+        let profile = event.detail.value;
+        // this.profileSelected= profile[1];
+        console.log('profile : ',profile);
+        this.profileSelected = profile[0];
+        console.log('profileSelected : ',this.profileSelected);
+
     }
     handleQuarterChange(event){
         this.quarterSelected = event.target.value;
