@@ -35,6 +35,11 @@
                               onchange={handleProfileChange}
                               variant="standard"
                             ></lightning-checkbox-group>
+                            <template if:true={showStateDropdown}>
+                                <lightning-combobox name="STATE" value={stateSelected} placeholder="State :"
+                                    options={stateOptions} onchange={handleStateChange}></lightning-combobox>
+                            </template>
+                            
                         </div>
                         </div>
                     </div>

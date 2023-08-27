@@ -28,6 +28,7 @@ export default class TaxProfileBystate extends LightningElement {
     showError=false;
     showStateLookup = false;
     stateOptions;
+    showStateDropdown= false;
     
     get yearOptions() {
         return [
@@ -64,11 +65,15 @@ export default class TaxProfileBystate extends LightningElement {
         this.yearSelected = event.target.value;
     }
     handleProfileChange(event){
-        // console.log('PROFILE SELECTED: ', JSON.stringify(event.target.value));
         let profile = event.detail.value;
-        // this.profileSelected= profile[1];
         console.log('profile : ',profile);
         this.profileSelected = profile[0];
+        this.profileSelected === 'ST' ? this.fetchStates() : this.showStateDropdown = false ;
+
+        // if(this.profileSelected === 'ST'){
+        //     this.fetchStates();
+        // }
+
         console.log('profileSelected : ',this.profileSelected);
 
     }
@@ -81,6 +86,7 @@ export default class TaxProfileBystate extends LightningElement {
 
     handleStateChange(event){
         this.stateSelected = event.target.value;
+        console.log('STATE SELECTED : ',this.stateSelected);
     }
 
     handleApply(){
@@ -129,6 +135,31 @@ export default class TaxProfileBystate extends LightningElement {
         this.showStateLookup = false;
     }
 
+    fetchStates(){
+         this.isLoading = true;
+        getDemoData({branch:this.profileSelected, companyCode: this.taxTypeSelected, year:this.yearSelected,  quarter:this.quarterSelected})
+            .then(result => {
+                console.log('this.isLoading : ',this.isLoading);
+                console.log('SOQL QUERY RETURNED: ',result);
+                let response = JSON.parse(result);
+                const taxData = response.states;
+                this.showError=false;
+                const stateopts = taxData.map(state => {
+                    return { label: state.longName, value: state.stateCode }
+                })
+                this.isLoading = false;
+                this.stateOptions = stateopts;
+                this.showStateDropdown = true;
+            })
+            .catch(error => {
+                console.log('ERROR FROM APEX CLASS : ',error);
+                this.isLoading = false;
+                // this.showData=false;
+                this.showError=true;
+                this.showStateDropdown = false;
+            });
+
+    }
 
 
 }
